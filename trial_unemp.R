@@ -1,24 +1,81 @@
 #title: "Trial_1 - Yohana"
 #output: word_document
 
-#Read the CSV file
-
-yr_2021<-read.csv("D:/Data Science 2021-2023/Spring 2022/Advanced R/Project/Datasets/Excel/Test_CSV/yr_2021_test.csv")
-head(yr_2021)
-
 #Import Necessary Libraries
 library(dplyr)
+library(tidyr)
+library(ggplot2)
 
-## Pivot the Gender
-#create a new dataframe with identity column
-#create two subsets with the identity 
-#1) identity,men,women 
-#2)identity,Race, Age, Marital.status
+#-----------------------Reading data and cleaning data--------------------------------#
+#create empty dataframe
+testing_merge <- data.frame(matrix(ncol = 6, nrow = 0))
+colnames(testing_merge) <- c('Year','Gender','Age','Race', 'Marital.status','Unemployement_Rate')
 
-#After gather is performed, join using the identity column
-yr_2021_gathered <- yr_2021 %>%
-  select(Year,Men,Women) %>%
-  gather(key = Gender, value = Unemployement_Rate, -Year)
+#code for dynamic reading of files
+file_names<-c('yr_2021_test.csv','yr_2020_test.csv','yr_2019_test.csv'
+              ,'yr_2018_test.csv','yr_2017_test.csv','yr_2016_test.csv'
+              ,'yr_2015_test.csv','yr_2014_test.csv','yr_2013_test.csv'
+              ,'yr_2012_test.csv','yr_2011_test.csv','yr_2010_test.csv'
+              ,'yr_2009_test.csv','yr_2008_test.csv','yr_2007_test.csv'
+              ,'yr_2006_test.csv','yr_2005_test.csv','yr_2004_test.csv'
+              ,'yr_2003_test.csv','yr_2002_test.csv')
 
-#View data sample
-head(head(yr_2021_gathered))
+for (val in file_names){
+  #Read the CSV file
+  yr_2021<-read.csv(paste0("D:/Data Science 2021-2023/Spring 2022/Advanced R/Project/Datasets/Excel/Test_CSV/",val))
+  
+  #introduce identity column
+  yr_2021 <- tibble::rowid_to_column(yr_2021, "index")
+  
+  #create two subsets with the identity 
+  #1) identity,men,women 
+  yr_2021_gender<-yr_2021%>%
+    select(index,Men,Women)
+  
+  #2)identity,Year,Race, Age, Marital.status
+  yr_2021_othercol<-yr_2021%>%
+    select(index,Year,Race, Age, Marital.status)
+  
+  ## Pivot the Gender and unemployement rates
+  yr_2021_gender <- yr_2021_gender %>%
+    select(index,Men,Women) %>%
+    gather(key = Gender, value = Unemployement_Rate, -index)
+
+  #join the othercol and gender df wrt to the index column
+  yr_2021_fin<-yr_2021_gender%>%
+    inner_join(yr_2021_othercol, by = c("index" = "index")) %>% 
+    select(Year,Gender,Age,Race, Marital.status,Unemployement_Rate)
+  
+  #Append all the datasets together
+  testing_merge<-rbind(testing_merge,yr_2021_fin)
+  
+}
+View(testing_merge)
+
+#Checking if all the year is read
+testing_merge %>% distinct(Year,Marital.status)
+
+#Each year has 48 records
+testing_merge %>% count()
+
+#------------------------------Visualizing Data--------------------------------#
+
+#bar chart
+ggplot(data = testing_merge) +
+  geom_col(mapping = aes(x = Age, y = Unemployement_Rate))
+
+ggplot(data = testing_merge) +
+  geom_col(mapping = aes(x = Gender, y = Unemployement_Rate))
+
+ggplot(data = testing_merge) +
+  geom_col(mapping = aes(x = Marital.status, y = Unemployement_Rate))
+
+
+#Coloured point chart
+ggplot(data = testing_merge) +
+  geom_point(mapping = aes(x = Year, y = Unemployement_Rate, color = Race))
+
+ggplot(data = testing_merge) +
+  geom_point(mapping = aes(x = Year, y = Unemployement_Rate))
+
+
