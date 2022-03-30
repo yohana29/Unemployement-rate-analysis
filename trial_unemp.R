@@ -78,4 +78,44 @@ ggplot(data = testing_merge) +
 ggplot(data = testing_merge) +
   geom_point(mapping = aes(x = Year, y = Unemployement_Rate))
 
+#------------------------------Applying Prediction Models to the Data--------------------------------#
+
+#Training set
+Unemployement_Train = testing_merge%>%
+  filter(Year<='2019')
+#%>%  count()
+#Unemployement_Train
+
+#Test set
+Unemployement_Test = testing_merge%>%
+  filter(Year>'2019')
+#%>%  count()
+#Unemployement_Test
+
+#Building a prediction model
+colnames(Unemployement_Train)
+model1= lm(Unemployement_Rate ~ Gender + Age + Race + Marital.status, data=Unemployement_Train)
+summary(model1)
+
+model2= lm(Unemployement_Rate ~ Race, data=Unemployement_Train)
+summary(model2)
+
+model3= lm(Unemployement_Rate ~ Gender , data=Unemployement_Train)
+summary(model3)
+
+#checking correlation for categorical variables
+install.packages("rcompanion")
+library(rcompanion)
+cramerV(Unemployement_Train)
+
+
+# Testing the Linear Regression Model
+
+predictTest= predict(model1, newdata= Unemployement_Test)
+predictTest
+
+SSE= sum((Unemployement_Test$Unemployement_Rate - predictTest)^2)
+SST = sum ((Unemployement_Test$Unemployement_Rate - mean(Unemployement_Train$Unemployement_Rate))^2)
+1-SSE/SST
+
 
