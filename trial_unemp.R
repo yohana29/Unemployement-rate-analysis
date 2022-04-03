@@ -70,6 +70,8 @@ ggplot(data = testing_merge) +
 ggplot(data = testing_merge) +
   geom_col(mapping = aes(x = Marital.status, y = Unemployement_Rate))
 
+ggplot(data = testing_merge) +
+  geom_col(mapping = aes(x = Race, y = Unemployement_Rate))
 
 #Coloured point chart
 ggplot(data = testing_merge) +
@@ -80,42 +82,70 @@ ggplot(data = testing_merge) +
 
 #------------------------------Applying Prediction Models to the Data--------------------------------#
 
-#Training set
-Unemployement_Train = testing_merge%>%
-  filter(Year<='2019')
-#%>%  count()
-#Unemployement_Train
+# #Training set
+# Unemployement_Train = testing_merge%>%
+#   filter(Year<='2019')
+# #%>%  count()
+# #Unemployement_Train
+# 
+# #Test set
+# Unemployement_Test = testing_merge%>%
+#   filter(Year>'2019')
+# #%>%  count()
+# #Unemployement_Test
+# 
+# #testing
+# res <- model.matrix(~Race, data = Unemployement_Train)
+# head(res[, -1])
+# 
+# Unemployement_Train_t <- Unemployement_Train %>%
+#   mutate(Gender = relevel(Gender, ref = "Female"))
+# 
+# model1= lm(Unemployement_Rate ~ Gender , data=Unemployement_Train)
+# summary(model1)$coef
+# 
 
-#Test set
-Unemployement_Test = testing_merge%>%
-  filter(Year>'2019')
-#%>%  count()
-#Unemployement_Test
 
 #Building a prediction model
-colnames(Unemployement_Train)
-model1= lm(Unemployement_Rate ~ Gender + Age + Race + Marital.status, data=Unemployement_Train)
-summary(model1)
-
-model2= lm(Unemployement_Rate ~ Race, data=Unemployement_Train)
-summary(model2)
-
-model3= lm(Unemployement_Rate ~ Gender , data=Unemployement_Train)
-summary(model3)
-
-#checking correlation for categorical variables
-install.packages("rcompanion")
-library(rcompanion)
-cramerV(Unemployement_Train)
+colnames(testing_merge)
+model1= lm(Unemployement_Rate ~ Gender + Age + Race + Marital.status, data=testing_merge)
+anova(model1)#all the variables are significant
+summary(model1) #to interpret the effect of each factor
 
 
-# Testing the Linear Regression Model
+# # Testing the Linear Regression Model
+# 
+# predictTest= predict(model1, newdata= Unemployement_Test)
+# predictTest
+# 
+# SSE= sum((Unemployement_Test$Unemployement_Rate - predictTest)^2)
+# SST = sum ((Unemployement_Test$Unemployement_Rate - mean(Unemployement_Train$Unemployement_Rate))^2)
+# 1-SSE/SST
 
-predictTest= predict(model1, newdata= Unemployement_Test)
-predictTest
+#------------------------------GDP Testing--------------------------------#
+gdpdata<-read.csv("D:/Data Science 2021-2023/Spring 2022/Advanced R/Project/Datasets/GDP.csv")
 
-SSE= sum((Unemployement_Test$Unemployement_Rate - predictTest)^2)
-SST = sum ((Unemployement_Test$Unemployement_Rate - mean(Unemployement_Train$Unemployement_Rate))^2)
-1-SSE/SST
+yr_groupby<-testing_merge%>%
+  group_by(Year) %>% 
+  summarise_at(vars(Unemployement_Rate), list(Unemployement_Rate = mean))
 
+yr_groupby
+
+yr_unemp_gdp<-yr_groupby%>%
+  inner_join(gdpdata, by = c("Year" = "Year")) %>% 
+  select(Year,GDP,Unemployement_Rate)
+
+yr_unemp_gdp
+
+model_test= lm(Unemployement_Rate ~ GDP ,data=yr_unemp_gdp)
+summary(model_test)
+
+
+ggplot(data = yr_unemp_gdp) +
+  geom_point(mapping = aes(x = GDP, y = Unemployement_Rate))
+
+ggplot(data = yr_unemp_gdp) +
+  geom_point(mapping = aes(x = Unemployement_Rate, y =GDP ))
+
+#------------------------------Criminal Testing--------------------------------#
 
