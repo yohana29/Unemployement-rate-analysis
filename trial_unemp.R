@@ -80,7 +80,7 @@ ggplot(data = testing_merge) +
 ggplot(data = testing_merge) +
   geom_point(mapping = aes(x = Year, y = Unemployement_Rate))
 
-#------------------------------Applying Prediction Models to the Data--------------------------------#
+#------------------------------Analysis of Data using Regression Models--------------------------------#
 
 # #Training set
 # Unemployement_Train = testing_merge%>%
@@ -105,14 +105,6 @@ ggplot(data = testing_merge) +
 # summary(model1)$coef
 # 
 
-
-#Building a prediction model
-colnames(testing_merge)
-model1= lm(Unemployement_Rate ~ Gender + Age + Race + Marital.status, data=testing_merge)
-anova(model1)#all the variables are significant
-summary(model1) #to interpret the effect of each factor
-
-
 # # Testing the Linear Regression Model
 # 
 # predictTest= predict(model1, newdata= Unemployement_Test)
@@ -122,25 +114,38 @@ summary(model1) #to interpret the effect of each factor
 # SST = sum ((Unemployement_Test$Unemployement_Rate - mean(Unemployement_Train$Unemployement_Rate))^2)
 # 1-SSE/SST
 
-#------------------------------GDP Testing--------------------------------#
+
+#Building a prediction model
+colnames(testing_merge)
+model1= lm(Unemployement_Rate ~ Gender + Age + Race + Marital.status, data=testing_merge)
+anova(model1)#all the variables are significant (to check significance)
+summary(model1) #to interpret the effect of each factor
+
+
+
+#------------------------------To check how GDP is affected by unemployement--------------------------------#
+#reading GDP data
 gdpdata<-read.csv("D:/Data Science 2021-2023/Spring 2022/Advanced R/Project/Datasets/GDP.csv")
 
+#Summarizing unemployement data for each year by taking the means
 yr_groupby<-testing_merge%>%
   group_by(Year) %>% 
   summarise_at(vars(Unemployement_Rate), list(Unemployement_Rate = mean))
 
 yr_groupby
 
+#Joining the unemployement data with GDP data for analysis
 yr_unemp_gdp<-yr_groupby%>%
   inner_join(gdpdata, by = c("Year" = "Year")) %>% 
   select(Year,GDP,Unemployement_Rate)
 
 yr_unemp_gdp
 
-model_test= lm(Unemployement_Rate ~ GDP ,data=yr_unemp_gdp)
+#Relationship between unemployement and GDP, (HAS A NEGATIVE ESTIMATE)
+model_test= lm(GDP ~ Unemployement_Rate ,data=yr_unemp_gdp)
 summary(model_test)
 
-
+#plots to determine the relationship
 ggplot(data = yr_unemp_gdp) +
   geom_point(mapping = aes(x = GDP, y = Unemployement_Rate))
 
@@ -148,4 +153,29 @@ ggplot(data = yr_unemp_gdp) +
   geom_point(mapping = aes(x = Unemployement_Rate, y =GDP ))
 
 #------------------------------Criminal Testing--------------------------------#
+
+crdata<-read.csv("D:/Data Science 2021-2023/Spring 2022/Advanced R/Project/Datasets/CrimeRates.csv")
+
+yr_groupby_cr<-testing_merge%>%
+  group_by(Year) %>% 
+  summarise_at(vars(Unemployement_Rate), list(Unemployement_Rate = mean))
+
+yr_groupby_cr
+
+yr_unemp_cr<-yr_groupby_cr%>%
+  right_join(crdata, by = c("Year" = "Year")) %>% 
+  select(Year,Crime_Rate,Unemployement_Rate)
+
+yr_unemp_cr
+
+#no significance
+model_test_cr= lm( Crime_Rate ~ Unemployement_Rate ,data=yr_unemp_cr)
+summary(model_test_cr)
+
+
+ggplot(data = yr_unemp_cr) +
+  geom_point(mapping = aes(x = Crime_Rate, y = Unemployement_Rate))
+
+ggplot(data = yr_unemp_gdp) +
+  geom_point(mapping = aes(x = Unemployement_Rate, y =GDP ))
 
