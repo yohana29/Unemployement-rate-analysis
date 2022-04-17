@@ -1,18 +1,26 @@
 ---
-title: "project"
-output: pdf_document
----
+title: "Unemployement Rate Analysis by Sriram Amruthur and Yohana Pandian"
+output:
+  word_document: default
+  pdf_document: default
 
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Gitlink: [Unemployement Rate Analysis code file](https://github.com/yohana29/Unemployement-rate-analysis.git)
+
+## Required Libraries
 
 ```{r }
+
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
+## Creating dummy dataframe to save the compiled single dataframe for later
 
 ```{r}
 testing_merge <- data.frame(matrix(ncol = 6, nrow = 0))
@@ -20,9 +28,10 @@ colnames(testing_merge) <- c('Year','Gender','Age','Race', 'Marital.status','Une
 
 ```
 
+## Code for dynamic reading of files
 
 ```{r}
-#code for dynamic reading of files
+
 file_names<-c('yr_2021_test.csv','yr_2020_test.csv','yr_2019_test.csv'
               ,'yr_2018_test.csv','yr_2017_test.csv','yr_2016_test.csv'
               ,'yr_2015_test.csv','yr_2014_test.csv','yr_2013_test.csv'
@@ -33,6 +42,8 @@ file_names<-c('yr_2021_test.csv','yr_2020_test.csv','yr_2019_test.csv'
 
 
 ```
+
+## Recurssive function to dynamically read files for data preprocessing
 
 ```{r}
 for (val in file_names){
@@ -71,6 +82,8 @@ View(testing_merge)
 
 ```
 
+## Data validation
+
 ```{r}
 #Checking if all the year is read
 testing_merge %>% distinct(Year,Marital.status)
@@ -79,6 +92,9 @@ testing_merge %>% distinct(Year,Marital.status)
 testing_merge %>% count()
 
 ```
+
+## Exploratory Analysis
+### Visualization using ggplot
 
 ```{r}
 #bar chart
@@ -105,11 +121,9 @@ ggplot(data = testing_merge) +
 
 ```
 
+### Analysis of Data using Regression Model
 
 ```{r}
-#------------------------------Analysis of Data using Regression Models--------------------------------#
-
-
 
 #Building a prediction model
 colnames(testing_merge)
@@ -119,8 +133,10 @@ summary(model1) #to interpret the effect of each factor
 
 ```
 
+## Additonal analysis to analyse the effect of Unemployement on GDP
+
 ```{r}
-#------------------------------To check how GDP is affected by unemployement--------------------------------#
+
 #reading GDP data
 gdpdata<-read.csv("D:/Data Science 2021-2023/Spring 2022/Advanced R/Project/Datasets/GDP.csv")
  
@@ -154,8 +170,9 @@ ggplot(data = yr_unemp_gdp) +
 
 ```
 
+## Additonal analysis to analyse the effect of Unemployement on Crime Rates
+
 ```{r}
-#------------------------------Criminal Testing--------------------------------#
 
 crdata<-read.csv("D:/Data Science 2021-2023/Spring 2022/Advanced R/Project/Datasets/CrimeRates.csv")
 
