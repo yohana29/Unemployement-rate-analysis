@@ -11,6 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Gitlink: [Unemployement Rate Analysis code file](https://github.com/yohana29/Unemployement-rate-analysis.git)
 
+#### The GIT repository has the code file, datasets, README file and the markdown file as well
+
 ## Required Libraries
 
 ```{r }
