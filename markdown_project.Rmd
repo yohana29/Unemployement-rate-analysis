@@ -13,6 +13,47 @@ Gitlink: [Unemployement Rate Analysis code file](https://github.com/yohana29/Une
 
 #### The GIT repository has the code file, datasets, README file and the markdown file as well
 
+# Motivation and Overview
+
+Firstly, we developed an inclination after learning how machine learning models are employed in various fields to solve real-life problems.We were inspired to dig deep into our analysis after attending the guest lecture2.Exploring on concepts discussed in the class helped us prepare for this project and inject more confidence for us to deliver.Ultimately, we zeroed in on this topic of unemployment as there has been a steady rise in job losses across the world, especially after Covid-19.
+
+The main goal of the project is to find the factors that influence the unemployement rate. Further, to find if unemployement truly is a factor that affects the country's economy (GDP) and crime rates.
+
+# Question we are trying to answer
+
+Initially the goal of our project was to only find the factors that are responsible for unemployement. Over the course of time, on reading about unemployement and how it affects the society we wanted to analyse and see if the results claimed in the internet where GDP,crimes rates are effected by unemployed could be statistically proven with the available data which eventually led us to extend the project. These are the questions we are trying to answer.
+1.Does race,gender,age,marital status have an impact on the unemployement?
+2.If yes, what factors among those significantly affect the unemployement?
+3.Out of all the Race, which has the most to least unemployement?
+4.Are males more unemployed or females?
+5.Does marital status have an effect on employement?
+6.Which year has recorded the least and most unemployement rates?
+7.Does age have an effect on employement?
+8.Does as country's GDP depend on unemployement?
+9.Does unemployement have an effect on the increasing/decreasing crime rates?
+10.Can the above questions be statistically proven and visualized?
+
+# Exploratory data analysis
+
+We performed exploratory data analysis using data visualization techniques to gather some insightful information between unemployment rate and other features in our dataset.First, we used the merged dataset and plotted age as our response variable and employment rate as the target variable to see which category had a predominant effect.Rest of the other features like gender, marital status, race and year was also compared with the unemployment rate.
+
+# Data Analysis and statistical methods used
+
+We created a linear regression model to forecast the unemployment rate for the year 2021 using the inbuilt lm() function in R.We received a multiple R square value of 0.4853.Since the goal of our project was to perform analysis based on the unemployment rate, we decided to stick with the linear regression model as we were content with the results obtained.We also built an ANOVA model to check for significance for our features.
+
+# Narrative and Summary
+We got the answers to all the questions we were trying to answer
+1.Yes,race,gender,age,marital status has an impact on the unemployement.
+2.All the factors above has a significant p-value from the anova table.
+3.The order of unemployement among the races is Black or African > Hispanic or latino > White > Asian
+4.Males are more unemployed than females.
+5.Since people who are married has a commitment we can see that they are more employed than individuals who are unmarried or widowed
+6.The year 2010 has the lowest employement and 2021 the highest.
+7.Individuals who are 25 and over are more employed than 16 and over.
+8.Yes, GDP is affected by unemployement rate and the relationship is inversely proportinal.
+9. Astonishingly, we are not able to statistically prove that crime rates and unemployement are related. This may be due to the fact that a lots of other factors contirbute to crime rates as well such as easy access to guns and the level of literacy.
+10.Yes the above questions we statitically infered and visualized below.
+
 ## Required Libraries
 
 ```{r }
